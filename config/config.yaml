@@ -1,0 +1,5 @@
+server:
+  port: 80
+
+topics:
+  some_kafka_info_topic: "some.kafka.info..DEV"
