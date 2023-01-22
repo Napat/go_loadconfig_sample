@@ -2,33 +2,36 @@ package configurer
 
 import (
 	"log"
+	"os"
 	"strings"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
 
-// MapConfig It reads in the configuration file and maps it to the interface(input struct).
-func MapConfig(conf interface{}) error {
+// LoadConfig It reads in the configuration file and maps it to the input struct interface.
+func LoadConfig(conf interface{}, configPath, configName, configType, osenv string) error {
+	currentEnvironment, ok := os.LookupEnv(osenv)
+	if ok && (currentEnvironment != "local") {
+		configName = configName + "." + currentEnvironment
+	}
 
-	viper.SetDefault("config.path", "./config")
-	err := viper.BindEnv("config.path", "CONFIG_PATH")
-	if err != nil {
+	viper.SetDefault("config.path", configPath)
+	if err := viper.BindEnv("config.path", "CONFIG_PATH"); err != nil {
 		log.Printf("warning: %s \n", err)
 	}
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
+	viper.SetConfigName(configName)
+	viper.SetConfigType(configType)
 	viper.AddConfigPath(viper.GetString("config.path"))
-
-	err = viper.ReadInConfig()
-	if err != nil {
-		log.Printf("warning: %s \n", err)
-		return err
-	}
-	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	viper.AutomaticEnv()
 
-	if err = viper.Unmarshal(conf); err != nil {
-		return err
+	if err := viper.ReadInConfig(); err != nil {
+		return errors.Wrap(err, "read config error")
+	}
+
+	if err := viper.Unmarshal(conf); err != nil {
+		return errors.Wrap(err, "unmarshal config to struct error")
 	}
 	return nil
 }

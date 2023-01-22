@@ -10,12 +10,12 @@ import (
 
 func main() {
 
-	conf := &config.AppConfig{}
-	if err := configurer.MapConfig(conf); err != nil {
+	conf := new(config.AppConfig)
+	if err := configurer.LoadConfig(conf, "./config", "config", "yaml", "APPENV"); err != nil {
 		panic(errors.Wrap(err, "load app config error"))
 	}
 	fmt.Printf("conf before secret: %#v\n", conf)
 
-	configurer.LoadSecretAppEnvFile(&conf.Secrets, "./config/secret.env")
+	configurer.LoadDotEnv(&conf.Secrets, "./config/secret.env", "SECRET", "APPENV")
 	fmt.Printf("conf after secret: %#v\n", conf)
 }

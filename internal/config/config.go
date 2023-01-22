@@ -15,6 +15,6 @@ type Topics struct {
 }
 
 type Secrets struct {
-	DBUsername string `envconfig:"DB_USERNAME"`
-	DBPassword string `envconfig:"DB_PASSWORD"`
+	DBUsername string `envconfig:"SECRET_DB_USERNAME"`
+	DBPassword string `envconfig:"SECRET_DB_PASSWORD"`
 }

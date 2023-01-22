@@ -8,14 +8,20 @@ run:
 	go run cmd/main.go
 
 ## run_local: execete main application using local env file
+## windows user note: "set APPENV=local && cmd /c go run cmd/main.go"
 .PHONY: run_local
 run_local:
 	export APPENV=local; go run cmd/main.go
 
-## run_sample_env: test execete main application without local env file but sample environment exported
-.PHONY: run_sample_env
-run_sample_env:
-	export DB_USERNAME=sample_user DB_PASSWORD=sample_password; go run cmd/main.go
+## run_local2: execete main application using local env file
+.PHONY: run_local2
+run_local2:
+	export APPENV=local2; go run cmd/main.go
+
+## run_export_env: test execete main application without local env file but environment exported
+.PHONY: run_export_env
+run_export_env:
+	export SECRET_DB_USERNAME=exportenv_user SECRET_DB_PASSWORD=exportenv_password; go run cmd/main.go
 
 ## test: run unit test
 .PHONY: test
